@@ -102,6 +102,11 @@ namespace Latkowska.Tests.DAO
             _tests = null;
         }
 
+        private bool ConvertToBool(string s)
+        {
+            return Convert.ToInt32(s) == 1;
+        }
+
         private void loadUsersFromDB(SQLiteConnection dbConnection)
         {
             string sql = "select * from USERS";
@@ -109,7 +114,9 @@ namespace Latkowska.Tests.DAO
             SQLiteDataReader reader = command.ExecuteReader();
             _users = new List<IUser>();
             while (reader.Read())
-                _users.Add(new User(Convert.ToInt32(reader["USER_ID"]), reader["LOGIN"].ToString(), reader["PASSWORD"].ToString(), Convert.ToBoolean(reader["EDITOR"])));
+            {
+                _users.Add(new User(Convert.ToInt32(reader["USER_ID"]), reader["LOGIN"].ToString(), reader["PASSWORD"].ToString(), ConvertToBool(reader["EDITOR"].ToString())));
+            }
         }
 
         private void loadTestsFromDB(SQLiteConnection dbConnection)
@@ -137,7 +144,7 @@ namespace Latkowska.Tests.DAO
             int totalPoints = 0, questionsNumber = 0;
             while (reader.Read())
             {
-                test.Questions.Add(new Question(Convert.ToInt32(reader["QUESTION_ID"]), Convert.ToInt32(reader["TEST_ID"]), reader["QUESTION_NAME"].ToString(), Convert.ToBoolean(reader["MULTIPLECHOICE"]), Convert.ToInt32(reader["QUESTION_POINTS"])));
+                test.Questions.Add(new Question(Convert.ToInt32(reader["QUESTION_ID"]), Convert.ToInt32(reader["TEST_ID"]), reader["QUESTION_NAME"].ToString(), ConvertToBool(reader["MULTIPLECHOICE"].ToString()), Convert.ToInt32(reader["QUESTION_POINTS"])));
                 totalPoints += test.Questions.Last().Points;
                 questionsNumber++;
             }
@@ -159,7 +166,7 @@ namespace Latkowska.Tests.DAO
             int answersNumber = 0;
             while (reader.Read())
             {
-                Answer answer = new Answer(Convert.ToInt32(reader["ANSWER_ID"]), Convert.ToInt32(reader["QUESTION_ID"]), reader["ANSWER_CONTENT"].ToString(), Convert.ToBoolean(reader["ANSWER_CORRECT"]));
+                Answer answer = new Answer(Convert.ToInt32(reader["ANSWER_ID"]), Convert.ToInt32(reader["QUESTION_ID"]), reader["ANSWER_CONTENT"].ToString(), ConvertToBool(reader["ANSWER_CORRECT"].ToString()));
                 question.Answers.Add(answer);
                 if (answer.Correct == true)
                     question.CorrectAnswers.Add(answer);
@@ -251,7 +258,7 @@ namespace Latkowska.Tests.DAO
                     IQuestion question = (IQuestion)item;
                     sql += question.TestID + ",";
                     sql += "'" + question.QuestionName + "',";
-                    sql += "'" + question.MultipleChoice + "',";
+                    sql += (question.MultipleChoice ? 1 : 0) + ",";
                     sql += question.Points;
                     testID = question.TestID;
                     break;
@@ -259,7 +266,7 @@ namespace Latkowska.Tests.DAO
                     IAnswer answer = (IAnswer)item;
                     sql += "'" + answer.Content + "',";
                     sql += answer.QuestionID + ",";
-                    sql += "'" + answer.Correct + "'";
+                    sql += (answer.Correct ? 1 : 0);
                     testID = getTestIDForQuestion(dbConnection, answer.QuestionID);
                     break;
             }
@@ -297,7 +304,7 @@ namespace Latkowska.Tests.DAO
                     IQuestion question = (IQuestion)item;
                     sql += "TEST_ID="+question.TestID + ",";
                     sql += "QUESTION_NAME='" + question.QuestionName + "',";
-                    sql += "MULTIPLECHOICE='"+question.MultipleChoice + "',";
+                    sql += "MULTIPLECHOICE="+(question.MultipleChoice ? 1 : 0) + ",";
                     sql += "QUESTION_POINTS="+question.Points+" ";
                     sql += "WHERE QUESTION_ID=" + question.QuestionID;
                     testID = question.TestID;
@@ -306,7 +313,7 @@ namespace Latkowska.Tests.DAO
                     IAnswer answer = (IAnswer)item;
                     sql += "ANSWER_CONTENT='" + answer.Content + "',";
                     sql += "QUESTION_ID="+answer.QuestionID + ",";
-                    sql += "ANSWER_CORRECT='"+ answer.Correct + "' ";
+                    sql += "ANSWER_CORRECT="+ (answer.Correct ? 1 : 0)+ " ";
                     sql += "WHERE ANSWER_ID=" + answer.AnswerID;
                     testID = getTestIDForQuestion(dbConnection, answer.QuestionID);
                     break;

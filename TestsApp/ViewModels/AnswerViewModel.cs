@@ -61,6 +61,16 @@ namespace TestsApp.ViewModels
             }
         }
 
+        private bool _chosen;
+        public bool Chosen
+        {
+            get { return _chosen; }
+            set
+            {
+                _chosen = value;
+                RaisePropertyChanged("Chosen");
+            }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

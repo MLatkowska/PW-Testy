@@ -133,6 +133,7 @@ namespace Latkowska.Testy.ViewModels
             {
                 testEdition = false;
                 Test = Parent.DAO.createTestInstance();
+                TestVM.Test = Test;
             }
             else
             {
@@ -201,7 +202,12 @@ namespace Latkowska.Testy.ViewModels
                 Parent.DAO.DeleteRecordFromDB("Question", _selectedQuestion.Question);
                 foreach(AnswerViewModel answer in _selectedQuestion.Answers)
                     Parent.DAO.DeleteRecordFromDB("Answer", answer.Answer);
-                TestVM.Questions.Remove(SelectedQuestion);
+                //if (TestVM.Test != null)
+                //{
+                    TestVM.TotalPoints -= SelectedQuestion.Points;
+                    TestVM.Questions.Remove(SelectedQuestion);
+                    TestVM.QuestionsNumber--;
+                //}
             }
         }
 
@@ -212,9 +218,12 @@ namespace Latkowska.Testy.ViewModels
             else
             {
                 Parent.DAO.AddNewRecordToDB("Question", SelectedQuestion.Question);
-                TestVM.Questions.Add(SelectedQuestion);
-                TestVM.QuestionsNumber++;
-                TestVM.TotalPoints += SelectedQuestion.Points;
+                //if (TestVM.Test != null)
+                //{
+                    TestVM.Questions.Add(SelectedQuestion);
+                    TestVM.QuestionsNumber++;
+                    TestVM.TotalPoints += SelectedQuestion.Points;
+                //}
             }
             Trace.WriteLine("Zapis pytania");
             SelectedTab = 1;

@@ -16,7 +16,8 @@ namespace Latkowska.Testy.ViewModels
 
         public ITest Test 
         { 
-            get { return _test; } 
+            get { return _test; }
+            set { _test = value; }
         }
 
         public TestViewModel(ITest test)

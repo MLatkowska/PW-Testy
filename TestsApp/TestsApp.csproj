@@ -106,7 +106,7 @@
     <Compile Include="ViewModels\AnswerViewModel.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
-    <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="Model\MainViewModel.cs" />
     <Compile Include="ViewModels\QuestionViewModel.cs" />
     <Compile Include="ViewModels\SolveQuestionViewModel.cs" />
     <Compile Include="ViewModels\StudentViewModel.cs" />

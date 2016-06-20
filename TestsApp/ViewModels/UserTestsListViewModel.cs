@@ -45,6 +45,12 @@ namespace Latkowska.Testy.ViewModels
             get { return _solveTestCommand; }
         }
 
+        private RelayCommand _showStatisticsCommand;
+        public ICommand ShowStatisticsCommand
+        {
+            get { return _showStatisticsCommand; }
+        }
+
         public UserTestsListViewModel() : this(null) {}
 
         public UserTestsListViewModel(MainViewModel mainViewModel)
@@ -57,6 +63,7 @@ namespace Latkowska.Testy.ViewModels
             GetAllTests();
 
             _solveTestCommand = new RelayCommand((param) => this.SolveTest());
+            _showStatisticsCommand = new RelayCommand((param) => this.ShowStatistics());
         }
 
         private void GetAllTests()
@@ -74,6 +81,11 @@ namespace Latkowska.Testy.ViewModels
                 Trace.WriteLine("Rozwiązywanie testu.");
                 Parent.CurrentView = new SolveQuestionViewModel(Parent, _selectedTest);
             }
+        }
+
+        private void ShowStatistics()
+        {
+            Trace.WriteLine("Statystyki dla testu.");
         }
     
         public event PropertyChangedEventHandler PropertyChanged;
